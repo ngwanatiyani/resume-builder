@@ -46,7 +46,7 @@ export const TemplateSelection = ({ onSelectTemplate, selectedTemplate, onBack }
               <FileText className="w-8 h-8 text-primary-foreground" />
             </div>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 text-foreground">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
             LEO AI Resume Builder
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

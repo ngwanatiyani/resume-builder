@@ -2,11 +2,23 @@ import { useState } from "react";
 import { ResumeForm } from "./ResumeForm";
 import { ResumePreview } from "./ResumePreview";
 import { AIEnhanceModal } from "./AIEnhanceModal";
+import { ATSCheckTab } from "./ATSCheckTab";
+import { JobMatchTab } from "./JobMatchTab";
 import { Navbar } from "./Navbar";
 import { Button } from "./ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { ResumeData, TemplateType } from "@/types/resume";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, FileText, FileCode } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 interface EditorViewProps {
   template: TemplateType;
@@ -57,18 +69,16 @@ export const EditorView = ({ template, onBack }: EditorViewProps) => {
     setIsEnhancing(true);
 
     try {
-      // Mock AI enhancement - in production, this would call Lovable AI
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Enhanced version with professional formatting
-      const enhanced = `• Spearheaded the development of innovative features, resulting in a 40% increase in user engagement and system efficiency
-• Architected and implemented scalable solutions that reduced processing time by 35% and improved overall performance
-• Collaborated with cross-functional teams to deliver high-quality products within aggressive timelines
-• Mentored and coached junior developers, fostering a culture of continuous learning and technical excellence
-• Led code reviews and established best practices that enhanced code quality and maintainability`;
-      
-      setEnhancedText(enhanced);
+      const { data, error } = await supabase.functions.invoke('enhance-text', {
+        body: { text: currentText }
+      });
+
+      if (error) throw error;
+
+      setEnhancedText(data.enhancedText);
+      toast.success("Text enhanced successfully!");
     } catch (error) {
+      console.error('Enhancement error:', error);
       toast.error("Failed to enhance text");
       setIsAIModalOpen(false);
     } finally {
@@ -88,7 +98,6 @@ export const EditorView = ({ template, onBack }: EditorViewProps) => {
   const handleDownloadPDF = async () => {
     toast.info("Generating PDF...");
     
-    // Get the resume preview element
     const previewElement = document.getElementById("resume-preview");
     if (!previewElement) {
       toast.error("Preview not found");
@@ -96,70 +105,81 @@ export const EditorView = ({ template, onBack }: EditorViewProps) => {
     }
 
     try {
-      // PDF.co API integration
-      const apiKey = "ngwanatiyanitn@gmail.com_Gydv9BCJQBUlqMzLfA6E5GTDlcpbqslSRzcJZSEDa2wUMQGN9lYyjDWqimoLKBEr";
-      
-      // Convert HTML to string
-      const htmlContent = previewElement.outerHTML;
-      
-      // Create a complete HTML document
-      const fullHtml = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { font-family: Arial, sans-serif; }
-            .font-serif { font-family: Georgia, serif; }
-          </style>
-        </head>
-        <body>
-          ${htmlContent}
-        </body>
-        </html>
-      `;
-
-      // Call PDF.co API
-      const response = await fetch("https://api.pdf.co/v1/pdf/convert/from/html", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": apiKey,
-        },
-        body: JSON.stringify({
-          html: fullHtml,
-          name: `${resumeData.name || 'Resume'}.pdf`,
-          margins: "10mm",
-          paperSize: "Letter",
-          orientation: "Portrait",
-          printBackground: true,
-        }),
+      const canvas = await html2canvas(previewElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
       });
 
-      const data = await response.json();
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
 
-      if (data.error) {
-        throw new Error(data.message);
-      }
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 0;
 
-      if (data.url) {
-        // Download the PDF
-        const link = document.createElement("a");
-        link.href = data.url;
-        link.download = `${resumeData.name || 'Resume'}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        toast.success("PDF downloaded successfully!");
-      } else {
-        throw new Error("No PDF URL returned");
-      }
+      pdf.addImage(imgData, "PNG", imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+      pdf.save(`${resumeData.name || 'Resume'}.pdf`);
+      
+      toast.success("PDF downloaded successfully!");
     } catch (error) {
       console.error("PDF generation error:", error);
       toast.error("Failed to generate PDF. Please try again.");
     }
+  };
+
+  const handleDownloadHTML = () => {
+    const previewElement = document.getElementById("resume-preview");
+    if (!previewElement) {
+      toast.error("Preview not found");
+      return;
+    }
+
+    const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>${resumeData.name}'s Resume</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    .font-serif { font-family: Georgia, serif; }
+    h1 { font-size: 2em; margin-bottom: 0.5em; }
+    h2 { font-size: 1.5em; margin-top: 1em; margin-bottom: 0.5em; }
+    h3 { font-size: 1.2em; margin-top: 0.8em; margin-bottom: 0.3em; }
+    p { margin: 0.5em 0; }
+    .contact-info { margin-bottom: 1em; }
+  </style>
+</head>
+<body>
+  ${previewElement.innerHTML}
+</body>
+</html>`;
+
+    const blob = new Blob([htmlContent], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${resumeData.name || 'Resume'}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast.success("HTML file downloaded!");
+  };
+
+  const handleDownloadDOCX = () => {
+    // For DOCX, we'll provide a simple text version
+    toast.info("DOCX export is a premium feature coming soon. Downloading as HTML instead.");
+    handleDownloadHTML();
   };
 
   return (
@@ -182,28 +202,65 @@ export const EditorView = ({ template, onBack }: EditorViewProps) => {
             Resume Editor
           </h1>
           
-          <Button
-            variant="gradient"
-            onClick={handleDownloadPDF}
-            className="gap-2 shadow-elegant hover:shadow-glow transition-all hover:scale-105"
-            size="lg"
-          >
-            <Download className="w-4 h-4" />
-            Download PDF
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="gradient"
+                className="gap-2 shadow-elegant hover:shadow-glow transition-all hover:scale-105"
+                size="lg"
+              >
+                <Download className="w-4 h-4" />
+                Export
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={handleDownloadPDF}>
+                <FileText className="w-4 h-4 mr-2" />
+                Export as PDF
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDownloadHTML}>
+                <FileCode className="w-4 h-4 mr-2" />
+                Export as HTML
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDownloadDOCX}>
+                <FileText className="w-4 h-4 mr-2" />
+                Export as DOCX
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-2 gap-8 items-start">
-          {/* Left Column - Form */}
+          {/* Left Column - Tabbed Controls */}
           <div className="lg:sticky lg:top-24 h-[calc(100vh-12rem)] overflow-hidden">
-            <ResumeForm
-              data={resumeData}
-              onChange={setResumeData}
-              onEnhanceClick={handleEnhanceClick}
-            />
+            <Tabs defaultValue="editor" className="h-full flex flex-col">
+              <TabsList className="grid w-full grid-cols-3 mb-4">
+                <TabsTrigger value="editor">Editor</TabsTrigger>
+                <TabsTrigger value="ats">ATS Check</TabsTrigger>
+                <TabsTrigger value="job-match">Job Match</TabsTrigger>
+              </TabsList>
+              
+              <div className="flex-1 overflow-y-auto pr-4">
+                <TabsContent value="editor" className="mt-0">
+                  <ResumeForm
+                    data={resumeData}
+                    onChange={setResumeData}
+                    onEnhanceClick={handleEnhanceClick}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="ats" className="mt-0">
+                  <ATSCheckTab resumeData={resumeData} />
+                </TabsContent>
+                
+                <TabsContent value="job-match" className="mt-0">
+                  <JobMatchTab resumeData={resumeData} />
+                </TabsContent>
+              </div>
+            </Tabs>
           </div>
 
           {/* Right Column - Preview */}
