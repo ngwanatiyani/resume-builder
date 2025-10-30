@@ -4,15 +4,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ResumeData, WorkExperience, Education } from "@/types/resume";
-import { Plus, Sparkles, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 
 interface ResumeFormProps {
   data: ResumeData;
   onChange: (data: ResumeData) => void;
-  onEnhanceClick: (jobId: string, currentText: string) => void;
 }
 
-export const ResumeForm = ({ data, onChange, onEnhanceClick }: ResumeFormProps) => {
+export const ResumeForm = ({ data, onChange }: ResumeFormProps) => {
   const handleChange = (field: keyof ResumeData, value: string) => {
     onChange({ ...data, [field]: value });
   };
@@ -201,19 +200,7 @@ export const ResumeForm = ({ data, onChange, onEnhanceClick }: ResumeFormProps) 
             </div>
             
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <Label htmlFor={`responsibilities-${exp.id}`}>Responsibilities</Label>
-                <Button
-                  type="button"
-                  variant="ai"
-                  size="sm"
-                  onClick={() => onEnhanceClick(exp.id, exp.responsibilities)}
-                  className="gap-2"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  Enhance with AI
-                </Button>
-              </div>
+              <Label htmlFor={`responsibilities-${exp.id}`}>Responsibilities</Label>
               <Textarea
                 id={`responsibilities-${exp.id}`}
                 value={exp.responsibilities}

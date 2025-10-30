@@ -1,22 +1,14 @@
 import { useState } from "react";
 import { ResumeForm } from "./ResumeForm";
 import { ResumePreview } from "./ResumePreview";
-import { AIEnhanceModal } from "./AIEnhanceModal";
 import { ATSCheckTab } from "./ATSCheckTab";
 import { JobMatchTab } from "./JobMatchTab";
 import { Navbar } from "./Navbar";
 import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
 import { ResumeData, TemplateType } from "@/types/resume";
-import { ArrowLeft, Download, FileText, FileCode } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -53,47 +45,6 @@ export const EditorView = ({ template, onBack }: EditorViewProps) => {
     skills: "",
   });
 
-  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
-  const [selectedJobId, setSelectedJobId] = useState<string>("");
-  const [enhancedText, setEnhancedText] = useState("");
-  const [isEnhancing, setIsEnhancing] = useState(false);
-
-  const handleEnhanceClick = async (jobId: string, currentText: string) => {
-    if (!currentText.trim()) {
-      toast.error("Please enter some responsibilities first");
-      return;
-    }
-
-    setSelectedJobId(jobId);
-    setIsAIModalOpen(true);
-    setIsEnhancing(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('enhance-text', {
-        body: { text: currentText }
-      });
-
-      if (error) throw error;
-
-      setEnhancedText(data.enhancedText);
-      toast.success("Text enhanced successfully!");
-    } catch (error) {
-      console.error('Enhancement error:', error);
-      toast.error("Failed to enhance text");
-      setIsAIModalOpen(false);
-    } finally {
-      setIsEnhancing(false);
-    }
-  };
-
-  const handleUseEnhancedText = (text: string) => {
-    setResumeData((prev) => ({
-      ...prev,
-      workExperience: prev.workExperience.map((exp) =>
-        exp.id === selectedJobId ? { ...exp, responsibilities: text } : exp
-      ),
-    }));
-  };
 
   const handleDownloadPDF = async () => {
     toast.info("Generating PDF...");
@@ -136,51 +87,6 @@ export const EditorView = ({ template, onBack }: EditorViewProps) => {
     }
   };
 
-  const handleDownloadHTML = () => {
-    const previewElement = document.getElementById("resume-preview");
-    if (!previewElement) {
-      toast.error("Preview not found");
-      return;
-    }
-
-    const htmlContent = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>${resumeData.name}'s Resume</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-    .font-serif { font-family: Georgia, serif; }
-    h1 { font-size: 2em; margin-bottom: 0.5em; }
-    h2 { font-size: 1.5em; margin-top: 1em; margin-bottom: 0.5em; }
-    h3 { font-size: 1.2em; margin-top: 0.8em; margin-bottom: 0.3em; }
-    p { margin: 0.5em 0; }
-    .contact-info { margin-bottom: 1em; }
-  </style>
-</head>
-<body>
-  ${previewElement.innerHTML}
-</body>
-</html>`;
-
-    const blob = new Blob([htmlContent], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${resumeData.name || 'Resume'}.html`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    toast.success("HTML file downloaded!");
-  };
-
-  const handleDownloadDOCX = () => {
-    // For DOCX, we'll provide a simple text version
-    toast.info("DOCX export is a premium feature coming soon. Downloading as HTML instead.");
-    handleDownloadHTML();
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
@@ -202,32 +108,15 @@ export const EditorView = ({ template, onBack }: EditorViewProps) => {
             Resume Editor
           </h1>
           
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="gradient"
-                className="gap-2 shadow-elegant hover:shadow-glow transition-all hover:scale-105"
-                size="lg"
-              >
-                <Download className="w-4 h-4" />
-                Export
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={handleDownloadPDF}>
-                <FileText className="w-4 h-4 mr-2" />
-                Export as PDF
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDownloadHTML}>
-                <FileCode className="w-4 h-4 mr-2" />
-                Export as HTML
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDownloadDOCX}>
-                <FileText className="w-4 h-4 mr-2" />
-                Export as DOCX
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            variant="gradient"
+            className="gap-2 shadow-elegant hover:shadow-glow transition-all hover:scale-105"
+            size="lg"
+            onClick={handleDownloadPDF}
+          >
+            <Download className="w-4 h-4" />
+            Export as PDF
+          </Button>
         </div>
       </header>
 
@@ -248,7 +137,6 @@ export const EditorView = ({ template, onBack }: EditorViewProps) => {
                   <ResumeForm
                     data={resumeData}
                     onChange={setResumeData}
-                    onEnhanceClick={handleEnhanceClick}
                   />
                 </TabsContent>
                 
@@ -272,14 +160,6 @@ export const EditorView = ({ template, onBack }: EditorViewProps) => {
         </div>
       </div>
 
-      {/* AI Enhancement Modal */}
-      <AIEnhanceModal
-        isOpen={isAIModalOpen}
-        onClose={() => setIsAIModalOpen(false)}
-        onUseText={handleUseEnhancedText}
-        enhancedText={enhancedText}
-        isLoading={isEnhancing}
-      />
     </div>
   );
 };
