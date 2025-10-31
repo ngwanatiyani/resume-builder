@@ -18,7 +18,7 @@ export const ResumePreview = ({ data, template }: ResumePreviewProps) => {
     <div
       className={cn(
         "w-full bg-white text-gray-900 shadow-2xl rounded-lg overflow-hidden",
-        "min-h-[842px] p-12",
+        "min-h-[400px] md:min-h-[842px] p-4 sm:p-6 md:p-12",
         templateStyles[template]
       )}
       id="resume-preview"
@@ -26,11 +26,11 @@ export const ResumePreview = ({ data, template }: ResumePreviewProps) => {
       {/* Modern Template */}
       {template === 'modern' && (
         <div className="space-y-8">
-          <div className="border-b-2 border-gray-300 pb-6">
-            <h1 className="text-5xl font-bold text-gray-900 mb-3 tracking-tight">
+          <div className="border-b-2 border-gray-300 pb-4 md:pb-6">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 mb-2 md:mb-3 tracking-tight break-words">
               {data.name || "Your Name"}
             </h1>
-            <div className="flex flex-wrap gap-4 text-sm text-gray-700">
+            <div className="flex flex-wrap gap-2 md:gap-4 text-xs md:text-sm text-gray-700">
               {data.email && (
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-gray-600" />
@@ -125,11 +125,11 @@ export const ResumePreview = ({ data, template }: ResumePreviewProps) => {
       {/* Classic Template */}
       {template === 'classic' && (
         <div className="space-y-7">
-          <div className="text-center border-b-2 border-gray-800 pb-5">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4 tracking-wide">
+          <div className="text-center border-b-2 border-gray-800 pb-3 md:pb-5">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 md:mb-4 tracking-wide break-words">
               {data.name || "Your Name"}
             </h1>
-            <div className="flex flex-wrap justify-center gap-3 text-sm text-gray-700">
+            <div className="flex flex-wrap justify-center gap-2 md:gap-3 text-xs md:text-sm text-gray-700">
               {data.email && <span>{data.email}</span>}
               {data.phone && <span>•</span>}
               {data.phone && <span>{data.phone}</span>}
@@ -211,11 +211,11 @@ export const ResumePreview = ({ data, template }: ResumePreviewProps) => {
       {/* Creative Template */}
       {template === 'creative' && (
         <div className="space-y-7">
-          <div className="bg-gradient-to-r from-gray-800 to-gray-700 -m-12 mb-8 p-10 text-white">
-            <h1 className="text-5xl font-black mb-4 tracking-tight">
+          <div className="bg-gradient-to-r from-gray-800 to-gray-700 -m-4 sm:-m-6 md:-m-12 mb-4 md:mb-8 p-4 sm:p-6 md:p-10 text-white">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-black mb-2 md:mb-4 tracking-tight break-words">
               {data.name || "Your Name"}
             </h1>
-            <div className="flex flex-wrap gap-5 text-sm">
+            <div className="flex flex-wrap gap-2 md:gap-5 text-xs md:text-sm">
               {data.email && (
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />

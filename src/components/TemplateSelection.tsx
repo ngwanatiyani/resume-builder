@@ -36,25 +36,25 @@ export const TemplateSelection = ({ onSelectTemplate, selectedTemplate, onBack }
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-background via-background to-muted">
+    <div className="min-h-screen flex items-center justify-center p-3 md:p-6 bg-gradient-to-br from-background via-background to-muted">
       <Navbar onLogoClick={onBack} />
       
       <div className="w-full max-w-6xl">
-        <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="p-3 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-glow">
-              <FileText className="w-8 h-8 text-primary-foreground" />
+        <div className="text-center mb-8 md:mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="inline-flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+            <div className="p-2 md:p-3 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-glow">
+              <FileText className="w-6 h-6 md:w-8 md:h-8 text-primary-foreground" />
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-foreground px-4">
             LEO AI Resume Builder
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
             Choose a template to start crafting your professional resume with AI assistance
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 mb-6 md:mb-8">
           {templates.map((template, index) => (
             <div 
               key={template.id}

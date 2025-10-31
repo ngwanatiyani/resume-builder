@@ -13,23 +13,23 @@ export const Landing = ({ onGetStarted }: LandingProps) => {
       <Navbar showGetStarted onGetStarted={onGetStarted} />
       
       {/* Hero Section */}
-      <section className="container mx-auto px-6 pt-32 pb-32">
+      <section className="container mx-auto px-4 md:px-6 pt-24 md:pt-32 pb-16 md:pb-32">
         <div className="text-center max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="inline-flex items-center gap-2 mb-6">
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-elegant">
-              <FileText className="w-10 h-10 text-primary-foreground" />
+          <div className="inline-flex items-center gap-2 mb-4 md:mb-6">
+            <div className="p-3 md:p-4 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-elegant">
+              <FileText className="w-8 h-8 md:w-10 md:h-10 text-primary-foreground" />
             </div>
           </div>
-          <h1 className="text-6xl md:text-7xl font-bold mb-6 text-foreground">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-foreground px-2">
             LEO AI Resume Builder
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-6 md:mb-8 leading-relaxed px-4">
             Create professional, ATS-friendly resumes in minutes with the power of AI
           </p>
           <Button 
             size="lg" 
             onClick={onGetStarted}
-            className="text-lg px-8 py-6 shadow-elegant hover:shadow-glow transition-all"
+            className="text-base md:text-lg px-6 md:px-8 py-4 md:py-6 shadow-elegant hover:shadow-glow transition-all"
           >
             Get Started Free
           </Button>
@@ -37,17 +37,17 @@ export const Landing = ({ onGetStarted }: LandingProps) => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="container mx-auto px-6 py-20 bg-card/50 backdrop-blur-sm scroll-mt-20">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+      <section id="how-it-works" className="container mx-auto px-4 md:px-6 py-12 md:py-20 bg-card/50 backdrop-blur-sm scroll-mt-20">
+        <div className="text-center mb-8 md:mb-16">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-foreground">
             How It Works
           </h2>
-          <p className="text-xl text-muted-foreground">
+          <p className="text-base md:text-xl text-muted-foreground px-4">
             Three simple steps to your perfect resume
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto">
           <Card className="p-8 text-center hover:shadow-elegant transition-all duration-300 border-border animate-in fade-in slide-in-from-bottom-6 hover:scale-105" style={{ animationDelay: "100ms" }}>
             <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
               <span className="text-3xl font-bold text-primary">1</span>
