@@ -1,58 +1,12 @@
-# Welcome to your Lovable project
+# Welcome to your resume builder
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/42da2863-536e-4eb5-b414-64cdbdeb1afb
+### LEO AI Resume Builder is an online tool designed to help users create professional, ATS-friendly resumes efficiently. The platform leverages the powerful Gemini 2.5 Pro API to analyze and enhance a user's job descriptions, making them more impactful and appealing to recruiters. Users begin by selecting one of three professionally designed templates optimized for applicant tracking systems. After the AI polishes their content, users can immediately download their polished resume as a PDF and apply for their desired jobs.
 
-## How can I edit this code?
 
-There are several ways of editing your application.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/42da2863-536e-4eb5-b414-64cdbdeb1afb) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
+### This project is built with:
 
 - Vite
 - TypeScript
@@ -60,14 +14,4 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/42da2863-536e-4eb5-b414-64cdbdeb1afb) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+**URL**: https://tiyaniresumebuilder.netlify.app/
