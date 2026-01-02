@@ -14,4 +14,4 @@
 - shadcn-ui
 - Tailwind CSS
 
-**URL**: https://tiyaniresumebuilder.netlify.app/
+**URL to access the website**: https://tiyaniresumebuilder.netlify.app/
